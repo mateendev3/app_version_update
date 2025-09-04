@@ -9,13 +9,22 @@ convertVersion({String? version, String? versionStore}) {
   List<String>? localVersion = [];
   List<String>? storeVersion = [];
 
+  /// Clean version string by removing non-numeric prefixes like "Version "
+  String cleanVersion(String versionStr) {
+    // Remove common prefixes like "Version ", "v", etc.
+    String cleaned = versionStr.replaceAll(
+        RegExp(r'^(Version\s+|v\s*)', caseSensitive: false), '');
+    return cleaned.trim();
+  }
+
   /// verify version string contains + char.
   if (version!.contains('+')) {
     localVersion = [version.split('+').last];
     version = version.split('+').first;
   }
 
-  /// add all values of array in localversion array.
+  /// Clean and add all values of array in localversion array.
+  version = cleanVersion(version);
   localVersion.addAll(version.split('.'));
 
   /// verify if exist + char in content version string.
@@ -24,7 +33,8 @@ convertVersion({String? version, String? versionStore}) {
     versionStore = versionStore.split('+').first;
   }
 
-  /// add all elements of array.
+  /// Clean and add all elements of array.
+  versionStore = cleanVersion(versionStore);
   storeVersion.addAll(versionStore.split('.'));
 
   /// Loop for verify values.
